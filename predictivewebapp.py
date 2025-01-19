@@ -19,13 +19,13 @@ scaler = pickle.load(open('minmax_scaler.sav', 'rb'))
 
 # Define valid input ranges
 VALID_RANGES = {
-    "D": (100, 2000),  # Example: Pile diameter in mm
-    "Z1": (1, 50),     # Depth of first soil layer in m
-    "Z2": (1, 50),     # Depth of second soil layer in m
-    "Z3": (1, 50),     # Depth of third soil layer in m
-    "Zp": (-50, 50),   # Elevation of pile top in m
-    "Nsh": (1, 50),    # Average SPT count along pile shaft
-    "Nt": (1, 100),    # Average SPT count at pile tip
+    "D": (300, 400),  # Example: Pile diameter in mm
+    "Z1": (3.4, 4.75),     # Depth of first soil layer in m
+    "Z2": (5.15, 8),     # Depth of second soil layer in m
+    "Z3": (0, 1.22),     # Depth of third soil layer in m
+    "Zp": (1.95, 3.4),   # Elevation of pile top in m
+    "Nsh": (8.55, 13.63),    # Average SPT count along pile shaft
+    "Nt": (6.71, 7.75),    # Average SPT count at pile tip
 }
 
 # creating a function for Prediction
@@ -98,13 +98,13 @@ def main():
     st.markdown("""
     **Important Note:**
     Please ensure that all input values are within the specified ranges:
-    - **D**: Pile Diameter (100 to 2000 mm)
-    - **Z1**: Depth of first soil layer (1 to 50 m)
-    - **Z2**: Depth of second soil layer (1 to 50 m)
-    - **Z3**: Depth of third soil layer (1 to 50 m)
-    - **Zp**: Elevation of pile top (-50 to 50 m)
-    - **Nsh**: Average SPT count along pile shaft (1 to 50)
-    - **Nt**: Average SPT count at pile tip (1 to 100)
+    - **D**: Pile Diameter (300 or 400 mm)
+    - **Z1**: Depth of first soil layer (3.4 to 4.75 m)
+    - **Z2**: Depth of second soil layer (5.15 to 8 m)
+    - **Z3**: Depth of third soil layer (0 to 1.22 m)
+    - **Zp**: Elevation of pile top (1.95 to 3.4 m)
+    - **Nsh**: Average SPT count along pile shaft (8.55 to 13.63)
+    - **Nt**: Average SPT count at pile tip (6.71 to 7.75)
     """)
 
 if __name__ == '__main__':
