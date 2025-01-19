@@ -17,6 +17,17 @@ loaded_model = pickle.load(open('XGBoost_grid_search.sav', 'rb'))
 # Define MinMaxScaler (recreate with the same scaling range and feature min/max values as during training)
 scaler = pickle.load(open('minmax_scaler.sav', 'rb'))
 
+# Define valid input ranges
+VALID_RANGES = {
+    "D": (100, 2000),  # Example: Pile diameter in mm
+    "Z1": (1, 50),     # Depth of first soil layer in m
+    "Z2": (1, 50),     # Depth of second soil layer in m
+    "Z3": (1, 50),     # Depth of third soil layer in m
+    "Zp": (-50, 50),   # Elevation of pile top in m
+    "Nsh": (1, 50),    # Average SPT count along pile shaft
+    "Nt": (1, 100),    # Average SPT count at pile tip
+}
+
 # creating a function for Prediction
 def pilebearingcapacity_prediction(input_data):
     try:
@@ -35,6 +46,17 @@ def pilebearingcapacity_prediction(input_data):
     except Exception as e:
         return f"Error in prediction: {str(e)}"
 
+# Validate input ranges
+def validate_input(value, param_name):
+    try:
+        value = float(value)
+        min_val, max_val = VALID_RANGES[param_name]
+        if not (min_val <= value <= max_val):
+            return False, f"{param_name} must be between {min_val} and {max_val}."
+        return True, ""
+    except ValueError:
+        return False, f"{param_name} must be a valid numeric value."
+
 # main function for Streamlit app
 def main():
     # giving a title
@@ -42,30 +64,48 @@ def main():
 
     # getting the input data from the user
     st.subheader("Enter the following parameters:")
-    D = st.text_input('Pile Diameter (numeric value in meters)')
-    Z1 = st.text_input('Z1 (numeric value)')
-    Z2 = st.text_input('Z2 (numeric value)')
-    Z3 = st.text_input('Z3 (numeric value)')
-    Zp = st.text_input('Zp (numeric value)')
-    Nsh = st.text_input('Nsh (numeric value)')
-    Nt = st.text_input('Nt (numeric value)')
+
+    error_messages = {}
+    inputs = {}
+
+    for param_name, (min_val, max_val) in VALID_RANGES.items():
+        user_input = st.text_input(f"{param_name} ({min_val} to {max_val}):")
+        is_valid, error_message = validate_input(user_input, param_name)
+        if not is_valid:
+            error_messages[param_name] = error_message
+        inputs[param_name] = user_input
 
     # code for Prediction
     PileBearingCapacity = ''
 
     # creating a button for Prediction
     if st.button('Predict Pile Bearing Capacity'):
-        try:
-            # converting inputs to a list of floats
-            input_data = [float(D), float(Z1), float(Z2), float(Z3), float(Zp), float(Nsh), float(Nt)]
-            PileBearingCapacity = pilebearingcapacity_prediction(input_data)
-        except ValueError:
-            PileBearingCapacity = "Please enter valid numeric values for all inputs."
-        except Exception as e:
-            PileBearingCapacity = f"An error occurred: {str(e)}"
+        if error_messages:
+            for param, error in error_messages.items():
+                st.error(f"Error in {param}: {error}")
+        else:
+            try:
+                # converting valid inputs to a list of floats
+                input_data = [float(inputs[param]) for param in VALID_RANGES]
+                PileBearingCapacity = pilebearingcapacity_prediction(input_data)
+            except Exception as e:
+                PileBearingCapacity = f"An error occurred: {str(e)}"
 
     # displaying the result
     st.success(PileBearingCapacity)
+
+    # Add important note for input ranges
+    st.markdown("""
+    **Important Note:**
+    Please ensure that all input values are within the specified ranges:
+    - **D**: Pile Diameter (100 to 2000 mm)
+    - **Z1**: Depth of first soil layer (1 to 50 m)
+    - **Z2**: Depth of second soil layer (1 to 50 m)
+    - **Z3**: Depth of third soil layer (1 to 50 m)
+    - **Zp**: Elevation of pile top (-50 to 50 m)
+    - **Nsh**: Average SPT count along pile shaft (1 to 50)
+    - **Nt**: Average SPT count at pile tip (1 to 100)
+    """)
 
 if __name__ == '__main__':
     main()
