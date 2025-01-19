@@ -11,7 +11,6 @@ import streamlit as st
 import xgboost
 from sklearn.preprocessing import MinMaxScaler
 
-
 # loading the saved model
 loaded_model = pickle.load(open('XGBoost_grid_search.sav', 'rb'))
 
