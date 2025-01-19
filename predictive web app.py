@@ -13,10 +13,10 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 # loading the saved model
-loaded_model = pickle.load(open('F:/python/Parametric analysis/XGBoost_grid_search.sav', 'rb'))
+loaded_model = pickle.load(open('XGBoost_grid_search.sav', 'rb'))
 
 # Define MinMaxScaler (recreate with the same scaling range and feature min/max values as during training)
-scaler = pickle.load(open('F:/python/Parametric analysis/minmax_scaler.sav', 'rb'))
+scaler = pickle.load(open('minmax_scaler.sav', 'rb'))
 
 # creating a function for Prediction
 def pilebearingcapacity_prediction(input_data):
